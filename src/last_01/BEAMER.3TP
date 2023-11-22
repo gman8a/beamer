@@ -1,0 +1,319 @@
+type
+  str50 = string[50];
+
+var
+  o,r,p : array[0..130,0..2] of real;
+  fn         : string[25];
+  in_f,out_f : text;
+  strln      : string[80];
+  time       : str50;
+
+  l,d,a,c,q  : real;
+  t5,t4,t3,k : integer;
+  tr,z       : integer;
+  t,y,d1     : real;
+  v3,v4,v5   : real;
+  e,i,sx,j   : real;
+  dff        : real;
+  va,vb      : real;
+  ma,mb,mx   : real;
+  x,df       : real;
+  v2         : real;
+  nl         : integer;  { number of loads }
+  load       : array[1..20,1..3] of real;
+
+const
+  page_msg = 'BEAMER Moment & Deflexsion CALCULATOR  By: Gary Argraves - 8712.03';
+
+
+
+procedure get_input_data;
+  begin
+     if paramCount>0 then fn:=paramStr(1)
+     else begin write('Enter Input File Name: '); readln(fn); writeln; end;
+     assign(in_f,fn);
+     {$I-} reset(in_f); {$I+}
+     if IoResult>0 then
+       begin
+         writeln(^G,'*** Error --> Can NOT Find File: ',fn,' ***');
+         halt;
+       end;
+     repeat readln(in_f,strln); until copy(strln,1,2)='::';
+     writeln(strln);
+     writeln('=====================================================');
+     readln(in_f,z);   { Case (Beam Type) }
+     readln(in_f,l);   { Beam Length }
+     readln(in_f,d);   { Distance to intermediate support }
+     readln(in_f,e);   { Modulus of Elasticity }
+     readln(in_f,i);   { Moment of Inertia }
+     readln(in_f,sx);  { Section Modulus }
+     readln(in_f,j);   { Tabulation Interval }
+     nl:=0;
+     repeat
+       nl:=nl+1; readln(in_f,a,c,q);
+       IF (A+C>L) OR (D>L) THEN error('ERROR A+C>L OR D>L');
+       IF (D=L) AND (Z=3) THEN error('ERROR D=L BEAM NOT STACTIC');
+       IF ((D=L) OR (D=0)) AND (Z=4) THEN error('ERROR D=L OR D=0 FOR PIN-PIN BEAM USE CASE 3');
+       load[nl,1]:=a;
+       load[nl,2]:=c;
+       load[nl,3]:=q;
+     until q<=0;
+  end;
+
+procedure sign_on;
+  begin
+     writeln('Concrete Beam Section Property Calculator - 8712.03, By: G. Argraves');
+     writeln;
+     time:=when;
+  end;
+
+procedure dup_input_file;
+  begin
+    assign(out_f,'temp.dat');
+    rewrite(out_f);
+    writeln(out_f,page_msg,'       Page 1 of 3');
+    writeln(out_f);
+    writeln(out_f,'I N P U T   D A T A   ',time);
+    writeln(out_f,'===================');
+    writeln(out_f);
+    reset(in_f);
+    repeat readln(in_f,strln); until copy(strln,1,2)='::';
+    writeln(out_f,strLn);
+    for j:=2 to 6 do begin readln(in_f,strln); writeln(out_f,strLn); end;
+    writeln(out_f,^L);
+    writeln(out_f,page_msg,'       Page 2 of 3');
+    close(in_f);
+    writeln(out_f);
+    writeln(out_f,'O U T P U T   D A T A   ',time);
+    writeln(out_f,'=====================');
+    writeln(out_f);
+  end;
+
+
+begin
+   sign_on;
+   get_input_data;
+   dup_input_file;
+
+   write(out_f,^L);   close(out_f);
+   erase(in_f);
+   rename(out_f,fn);
+end.
+
+function cub (x:real):real; begin cub:=x*x*x; end;
+function quad(x:real):real; begin quad:=x*x*x*x; end;
+
+procedure sigon;
+  begin
+    writeln('CIVIL ENGINEERING SYSTEM');
+    writeln('BEAMER V1.00 - BEAM ANALYSIS');
+    writeln;
+    writeln('   COPYRIGHT 1983');
+    writeln('ALL RIGHTS RESERVED BY:');
+    writeln('CompuRight Industries');
+    writeln('P.O. Box 719, Newtown CT 06484');
+    writeln('==============================');
+    writeln('THIS PROGRAM WILL PRINT MOMENT AND DEFLECTION VALUES ALONG PRISMATIC BEAMS.');
+  end;
+
+procedure init;
+  begin
+    t4:=0; t3:=0; k:=0;
+    v3:=0; v4:=0; v5:=0;
+
+  end;
+
+procedure error(s:string);
+  begin
+    writeln(out_f);
+    writeln(out_f,s);
+    close(in_f);
+    close(out_f);
+    writeln(^G,'*** Program HALTED on Error ***');
+    halt;
+  end;
+
+
+procedure output_head;
+  begin
+    writeln(out_f);
+    writeln(out_f,'===================================');
+    writeln(out_f,'V1=',va:10:0,' (LBS.)  V2=',Q*C-VA:10:0);
+    writeln(out_f);
+    writeln(out_f,' TAB        MOMENT         DEFLECTION      STRESS');
+    writeln(out_f,'(FT.)     (FT.-LBS.)         (FEET)         (PSI)');
+    writeln(out_f,'------    ----------       ----------      ------');
+  end;
+
+procedure output_data;
+  begin
+    DFF:=-DF*144/E/I;
+    writeln(out_f,X:6:2,MX:11:1,DFF:8:5,MX*12/SX:11:1);
+    R[K,1]:=R[K,1]+MX;
+    R[K,2]:=R[K,2]+DF;
+  end;
+
+procedure end_chk;
+  begin
+    T5:=0;
+    IF ABS(X-J-L) >=0.001 THEN
+      begin
+        X:=L;
+        T5:=1;
+      end;
+  end;
+
+procedure fix_fix;
+  begin
+    D:=0;
+    D:=A+C;
+    MA:=-Q/12/L/L*(6*L*L*(D*D-A*A)-8*L*(cub(D)-cub(A))+3*(quad(D)-quad(A)));
+    MB:=-Q/12/L/L*(4*L*(cub(D)-cub(A))-3*(quad(D)-quad(A)));
+    VA:=Q*C/L*(L-A-C/2)+(MB-MA)/L;
+    VB:=Q*C-VA;
+    output_head;
+    X:=0;
+    repeat
+      repeat
+        DF:=VA*cub(X)/6+MA*sqr(X)/2;
+        MX:=VA*X+MA;
+        IF (X>A) and (X<=A+C) THEN
+          begin
+            MX:=MX-Q/2*sqr(X-A);
+            DF:=DF-Q/2*(quad(X)/12-cub(X)*A/3+A*A*X*X/2+quad(A)/12-cub(A)*X/3)
+          end;
+        IF X>A+C THEN
+          begin
+            MX:=(Q*C-VA)*(L-X)+MB;
+            DF:=VB/2*(L*sqr(X)-cub(X)/3-sqr(L)*X+cub(L)/3)+MB*(-L*X+X*X/2+L*L/2);
+          end;
+        K:=K+1;
+        output_data;
+        X:=X+J;
+      until X>L;
+      end_chk;
+    until t5=0;
+  end;
+
+procedure pin_fix;
+
+  procedure pro1;
+    begin
+      IF D>=A+C THEN T:=C*Q*sqr(L-D)*((L-D)/3-A/2-C/4+D/2)
+      else begin
+        IF D<A+0 THEN D:=A;
+        Y:=A+C-D;
+        T:=Q/2*Y*Y*(Y*Y/4+2*(D-A)*Y/3+sqr(D-A)/2);
+        Y:=L-D;
+        T:=T+C*Q*Y*Y*(Y/3-A/2-C/4+D/2);
+        Y:=A+C-D;
+        T:=T-C*Q*Y*Y*(Y/3-A/2-C/4+D/2);
+      end;
+      D:=D1;
+      IF TR=1 THEN D:=X;
+      IF D<A+0 THEN T:=T+(A-D)*C/2*Q*((A-L)*(A-L+C)+sqr(C)/3);
+    end;
+
+  begin
+    VA:=C*Q;
+    D1:=D;
+    TR:=0;
+    IF D<L THEN pro1;
+    IF D<L THEN VA:=T*3/sqr(L-D);
+    TR:=1;
+    IF Z=2 THEN output_head;
+    X:=0;
+    repeat
+      repeat
+        MX:=0;
+        IF X>A+0 THEN MX:=-Q/2*sqr(X-A);
+        IF X>A+C THEN MX:=-C*Q*(X-A-C/2);
+        IF X>D THEN   MX:=MX+VA*(X-D);
+        IF X<=D THEN  DF:=VA*sqr(L-D)/6*(3*L-3*X-L+D);
+        IF X>D THEN   DF:=VA*sqr(L-X)/6*(3*(L-D)-L+X);
+        D:=X;
+        pro1;
+        DF:=DF-T;
+        K:=K+1;
+        IF Z<>2 THEN
+          begin
+            O[K,1]:=MX;
+            O[K,2]:=DF;
+          end
+        else output_data;
+        D:=D1;
+        X:=X+J;
+      until x>l;
+      end_chk;
+    until t5=0;
+  end;
+
+procedure pin_pin;
+  begin
+    pin_fix;
+    V2:= O[K,1] /(L-D);
+    K:=0;
+    X:=0;
+    repeat
+      repeat
+        K:=K+1;
+        IF X>D+0 THEN O[K,1]:=O[K,1]-V2*(X-D);
+        IF X<D+0 THEN DF:=(cub(L-X)-cub(D-X))/3+(X-D)/2*(sqr(L-X)-sqr(D-X));
+        IF X>=D THEN  DF:=sqr(L-X)*(L/3-D/2+X/6);
+        DF:=V2*(sqr(L-D)/3*(L-X)-DF);
+        O[K,2]:=O[K,2]+DF;
+        X:=X+J;
+      until x>l;
+      end_chk;
+    until t5=0;
+    VA:=VA-V2;
+    IF T3=1 THEN GOTO 780
+    IF Z=4 THEN GOTO 740
+    output_head;
+    K:=0;
+    X:=0;
+    repeat
+      repeat
+        K:=K+1;
+        MX:=O[K,1];
+        DF:=O[K,2];
+        output_data;
+        X:=X+J;
+      until x>l;
+    end_chk;
+    until t5=0;
+  end;
+
+begin    (******   M A I N    L I N E   *******)
+  sigon;
+  init;
+  get_beam_load;
+    case z of
+         1:fix_fix;
+         2:pin_fix;
+         3:pin_pin;
+         4:pin_pin_pin;
+       else begin error('*** Beam Case Error ***'); end;
+    end{case};
+
+    V3:=V3+VA;
+    IF Z=4 THEN V4:=V4+VB;
+    IF Z in [1,2,3] THEN V4:=V4+C*Q-VA;
+    IF Z=4 THEN V5:=V5+W-VA-VB;
+    readln(in_f,g); { DO YOU WANT TO SUPER-IMPOSE ANOTHER LOAD ON THIS BEAM Y/N }
+    repeat
+      if g in ['Y','y'] then
+        begin
+          K:=0;
+          T4:=1;
+          get_beam_load;
+          case z of
+            2,3:pin_fix;
+              1:fix_fix;
+              4:pin_pin_pin;
+          end{case}
+        end;
+    until not g in ['Y','y'];
+
+
+end.
