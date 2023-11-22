@@ -1,7 +1,7 @@
 # beamer
 Solve structural beams for moments and shears
 
-You can run beamer at this URL:
+You can run Beamer at this URL:
    http://174.83.15.115:8090/civilsoft/html/beamer.html
 
 SAMPLE INPUT DATA
