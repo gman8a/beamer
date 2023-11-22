@@ -1,0 +1,98 @@
+                             BEAMER
+                 Beam Analysis Computer Program
+          
+                         Copyright 1893
+                       All Rights Reserved
+                         US Software Co.
+                           P.O Box 805
+                        Shelton, CT 06484
+
+
+     BEAMER  is  computer  solution of five   commonly  occurring 
+structural  beam  types.   BEAMER   will solve  for  the  support 
+reactions,  bending  moments,  stress and deflection values at  a 
+specified tabulation interval along a beam. 
+
+     The five beam types that BEAMER can solve are:
+
+     1. Fixed-Fixed beam .
+     2. Fixed-Pinned beam.
+     3. Cantilevered beam.
+     4. Pinned-Pinned beam.
+     5. Pinned-Pinned-Pinned beam.
+
+     In  case 2 the pinned support may be located at any position 
+along  the beam.  If the support is located at the fixed end  the 
+beam is cantilevered.
+
+     In  case  4 one of the pinned supports  is  relocatable, the 
+other is set at the end of the beam.
+
+     In case 5 two of the pinned supports are set at both ends of 
+the beam the third is relocatable along the span of the beam.
+
+     In all cases a distributed load may be placed anywhere along 
+the beam.  A concentrated load may also be placed on the beam  in 
+the  following manner:  For a concentrated load of 2000 lbs.  the 
+length  of  the load (C) shall be set to 0.1  ft.  and  the  load 
+intensity (Q) shall be set to 20,000 lbs./ft.  (20,000 lbs/ft.  * 
+.1 ft.  = 2000 lb.  concentrated load). Or Q=200,000 lbs./ft. and 
+C=.01 ft. would also give the same concentrated load effect.
+
+     Only one load may be placed on a beam at a time. BEAMER will 
+figure the moment,  deflection and support reaction values for  a 
+single  load  condition,  BEAMER then displays these  values  and 
+retains them in an array.  BEAMER will then ask if you would like 
+to  super-impose another load on this beam.  If answered  YES the 
+operator is prompted for more load data. BEAMER  then figures the 
+moment,  deflection, and support reaction values for the new load 
+condition  independant  of the previous  load  conditions.  These 
+newly  fiqured values are again displayed to the  operator.  When 
+the operator answers NO to the super-impose question BEAMER  will 
+display the combined effect of all the load conditions.
+.pa
+     The  programs on the enclosed disk are compilied BASIC code. 
+The  program  BEAMER links to a run-time  module  called  BASRUN. 
+BASRUN  must  reside  on the same disks as  BEAMER.  The  program 
+BEAMER2  does  not need the run-time module  BASRUN.  Notice  the 
+difference in size of BEAMER and BEAMER2. In BEAMER2 the routines 
+from  the run-time module have been incorporated in  the  BEAMER2 
+file making it a much larger file.  BEAMER and BEAMER2 have  been 
+compiled from the same source program.  
+
+     The  BASIC  source code has not been included on  the  disk. 
+BEAMER  uses  many  highly complex  mathematical  algorhythms  to 
+obtain  the  beam  solutions.  If the source  code  were  changed 
+improperly   the  solutions   would  not  be  correct  ultimately 
+resulting   in structural failures.  US Software  Co.  will  only 
+release  the  source code to qualified Civil Engineers to  assure 
+the integrity of the source code.  Please contact US Software Co. 
+if you which to change or enhance the BEAMER program. 
+
+     Data from the BEAMER program can be printed to your printer. 
+If you wish a hard copy of the data you can do one of two things. 
+One,  Toggle  your  printer on by holding the <CONTROL> key  down 
+while  simultaneously  pressing the <P>  key  (^P).  This  action 
+should  be done before you run BEAMER.  It will cause your system 
+to  send  all screen print to the printer.  A system  error  will 
+occur  if  your printer is not in the  ready  state.  The  BEAMER 
+program  does  not incorporate the BASIC  LPRINT  statement.  The 
+program  entitled BEAMERLP on the disk does use the BASIC  LPRINT 
+statements.  If  you run BEAMERLP you do not need to toggle  your 
+printer on (^P) from the system level, just ready your printer. 
+
+     This software is copyrighted by US Software Company.   Under 
+copyright  laws  there  are  penalties  for  making  unauthorized 
+copies.   You  may  make two copies in machine-readable form  for 
+your own use for backup and archival purposes.  Any copy you make 
+must include reproduction of the copyright notice.   You may  not 
+sell or otherwise transfer any copies that you make.  
+
+    This  software  is sold on an "as  is"  basis.   US  Software 
+Company  disclaims  all conditions and warranties with regard  to 
+the   software.    US  software  shall  have  no   liability   or 
+responsibility  of  any  kind,  including  special,  indirect  or 
+consequential  damages,  arising from such software or the use or 
+modification  thereof.   US Software Company strongly  recommends 
+that  this  software  be  used  only  by  qualified  professional 
+engineers who are capable of interpreting beam analysis data. 
