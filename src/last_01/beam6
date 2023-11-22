@@ -1,0 +1,103 @@
+BEAM CALCULATOR  By: Gary Argraves - 8712.03       Page 1
+
+I N P U T   D A T A   10:45am Wed, Oct 04, 1989
+==================================================
+
+:: Job Test Beam
+3             CASE  1=Fix-Fix 2=Pin-Fix 3=Pin-Pin 4=Pin-Pin-Pin 2-Cantilever
+6.0           L  Beam Length Over All (feet)
+3.0           D  Distance to Intermediate Support from Left End of Beam (feet)
+30e6          E  Modulus of Elasticity   Steel=30.0E6 psi  Wood=1.76E6
+32            I  Moment of Inertia   (in^4)   used in deflexsion computations
+10            S  Section Modulus     (in^3)
+0.50          t  Tabulation Interval (feet) Output is in tabulated form
+0 0.1 20      A =Distance to Load from Left, C =Load Length, Q =Load Intensity
+0 0 0
+
+4 3 4.000     NEXT Loading (Q units are Kips/ft.) repeat for all loads
+7 3 4.800
+10 5 5.600
+0 0.1 96.000
+0 0 0         END of Loading (must be here)
+
+       Case 1. Fixed-Fixed              Case 2. Pinned-Fixed
+
+      ||<--A--><--C-->   ||              <--A--><--C-->   ||
+      ||       #######-Q ||                     #######-Q ||
+      ||=================||              =================||
+      ||                 ||              <--D-->^         ||
+      ||<-------L------->||              <-------L------->||
+
+
+       Case 3. Pinned-Pinned            Case 4. Pin-Pin-Pin
+
+        <--A--><--C-->                   <--A--><--C-->
+               #######-Q                        #######-Q
+        =================                =================
+        <--D-->^        ^                ^<--D-->^       ^
+        <-------L------->                <-------L------->
+
+
+       Case 2. Cantilever (D=L)          Variable Explanation
+                                     -----------------------------
+        <--A--><--C-->   ||          L = Over All Length (feet)
+               #######-Q ||          D = Distance to Support
+        =================||          A = Distance to Start of Load
+        <-------D------->||          C = Length of Load
+        <-------L------->||          Q = Load Intensity (kips/ft.)
+
+    For Concentrated Loads:
+    Set C = 0.1' or 0.01' and Increase Q accordingly by a factor of 10 or 100
+
+:: END OF INPUT
+
+BEAM CALCULATOR  By: Gary Argraves - 8712.03       Page 2
+
+O U T P U T   D A T A   10:45am Wed, Oct 04, 1989
+==================================================
+BEAM CASE: PINED-PINED  L=  6.00 ft.  D=  3.00 ft.
+E= 3.0E+07 psi   I=   32.0 in^4    Sx=  10.0 in^3
+==================================================
+LOAD: A=  0.00 ft. C=  0.10 ft. Q=  20.000 Kips/ft
+
+V1=    3.967 Kips    V2=   -1.967
+
+ TAB         MOMENT        DEFLECTION       STRESS
+(FEET)     (KIP-FEET)        (FEET)         (KSI)
+------     ----------      ----------       ------
+  0.00         0.0000        0.005288       0.0000
+  0.50        -0.9000        0.004197      -1.0800
+  1.00        -1.9000        0.003140      -2.2800
+  1.50        -2.9000        0.002154      -3.4800
+  2.00        -3.9000        0.001278      -4.6800
+  2.50        -4.9000        0.000547      -5.8800
+  3.00        -5.9000        0.000000      -7.0800
+  3.50        -4.9167       -0.000338      -5.9000
+  4.00        -3.9333       -0.000492      -4.7200
+  4.50        -2.9500       -0.000498      -3.5400
+  5.00        -1.9667       -0.000393      -2.3600
+  5.50        -0.9833       -0.000215      -1.1800
+  6.00         0.0000        0.000000       0.0000
+
+==================================================
+COMBINED EFFECT OF ALL LOADS
+
+V1=    3.967 Kips    V2=   -1.967
+
+ TAB         MOMENT        DEFLECTION        SHEAR         STRESS
+(FEET)     (KIP-FEET)        (FEET)          (KIPS)         (KSI)
+------     ----------      ----------       ---------      -------
+  0.00         0.0000        0.005288          0.0000       0.0000
+  0.50        -0.9000        0.004197         -2.0000      -1.0800
+  1.00        -1.9000        0.003140         -2.0000      -2.2800
+  1.50        -2.9000        0.002154         -2.0000      -3.4800
+  2.00        -3.9000        0.001278         -2.0000      -4.6800
+  2.50        -4.9000        0.000547         -2.0000      -5.8800
+  3.00        -5.9000        0.000000          1.9667      -7.0800
+  3.50        -4.9167       -0.000338          1.9667      -5.9000
+  4.00        -3.9333       -0.000492          1.9667      -4.7200
+  4.50        -2.9500       -0.000498          1.9667      -3.5400
+  5.00        -1.9667       -0.000393          1.9667      -2.3600
+  5.50        -0.9833       -0.000215          1.9667      -1.1800
+  6.00         0.0000        0.000000          1.9667       0.0000
+
